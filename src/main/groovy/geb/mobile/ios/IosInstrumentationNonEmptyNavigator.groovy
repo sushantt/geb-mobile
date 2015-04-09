@@ -9,6 +9,7 @@ import geb.navigator.EmptyNavigator
 import geb.navigator.Navigator
 import geb.navigator.SelectFactory
 import geb.textmatching.TextMatcher
+import geb.waiting.Wait
 import geb.waiting.WaitTimeoutException
 import groovy.util.logging.Slf4j
 import org.openqa.selenium.By
@@ -187,6 +188,16 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     }
 
     @Override
+    Navigator next(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator next(Map<String, Object> attributes, String selector) {
+        return null
+    }
+
+    @Override
     Navigator nextAll() {
         throw new NotImplementedException("no next by xpath on selendroid elements yet")
 //        navigatorFor collectElements {
@@ -203,12 +214,32 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     }
 
     @Override
+    Navigator nextAll(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator nextAll(Map<String, Object> attributes, String selector) {
+        return null
+    }
+
+    @Override
     Navigator nextUntil(String selectorString) {
         throw new NotImplementedException("no next by xpath on selendroid elements yet")
 //        navigatorFor collectElements { element ->
 //            def siblings = element.findElements(By.xpath("following-sibling::*"))
 //            collectUntil(siblings, selectorString)
 //        }
+    }
+
+    @Override
+    Navigator nextUntil(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator nextUntil(Map<String, Object> attributes, String selector) {
+        return null
     }
 
     @Override
@@ -230,6 +261,16 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     }
 
     @Override
+    Navigator previous(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator previous(Map<String, Object> attributes, String selector) {
+        return null
+    }
+
+    @Override
     Navigator prevAll() {
         throw new NotImplementedException("no previous by xpath on selendroid elements yet")
 //        navigatorFor collectElements {
@@ -246,12 +287,32 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     }
 
     @Override
+    Navigator prevAll(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator prevAll(Map<String, Object> attributes, String selector) {
+        return null
+    }
+
+    @Override
     Navigator prevUntil(String selectorString) {
         throw new NotImplementedException("no previous by xpath on selendroid elements yet")
 //        navigatorFor collectElements { element ->
 //            def siblings = element.findElements(By.xpath("preceding-sibling::*")).reverse()
 //            collectUntil(siblings, selectorString)
 //        }
+    }
+
+    @Override
+    Navigator prevUntil(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator prevUntil(Map<String, Object> attributes, String selector) {
+        return null
     }
 
     @Override
@@ -264,6 +325,16 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     @Override
     Navigator parent(String selectorString) {
         parent().filter(selectorString)
+    }
+
+    @Override
+    Navigator parent(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator parent(Map<String, Object> attributes, String selector) {
+        return null
     }
 
     @Override
@@ -283,11 +354,31 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     }
 
     @Override
+    Navigator parents(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator parents(Map<String, Object> attributes, String selector) {
+        return null
+    }
+
+    @Override
     Navigator parentsUntil(String selectorString) {
         navigatorFor collectElements { element ->
             def ancestors = element.findElements(By.xpath("ancestor::*")).reverse()
             collectUntil(ancestors, selectorString)
         }
+    }
+
+    @Override
+    Navigator parentsUntil(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator parentsUntil(Map<String, Object> attributes, String selector) {
+        return null
     }
 
     @Override
@@ -297,6 +388,16 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
 //            def parents = it.findElements(By.xpath("ancestor::*")).reverse()
 //            parents.find { CssSelector.matches(it, selectorString) }
 //        }
+    }
+
+    @Override
+    Navigator closest(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator closest(Map<String, Object> attributes, String selector) {
+        return null
     }
 
     @Override
@@ -312,6 +413,16 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     }
 
     @Override
+    Navigator children(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator children(Map<String, Object> attributes, String selector) {
+        return null
+    }
+
+    @Override
     Navigator siblings() {
         navigatorFor collectElements {
             it.findElements(By.xpath("preceding-sibling::*")) + it.findElements(By.xpath("following-sibling::*"))
@@ -321,6 +432,16 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     @Override
     Navigator siblings(String selectorString) {
         siblings().filter(selectorString)
+    }
+
+    @Override
+    Navigator siblings(Map<String, Object> attributes) {
+        return null
+    }
+
+    @Override
+    Navigator siblings(Map<String, Object> attributes, String selector) {
+        return null
     }
 
     @Override
@@ -411,10 +532,20 @@ class IosInstrumentationNonEmptyNavigator extends AbstractNavigator {
     }
 
     @Override
+    Navigator click(Class<? extends Page> pageClass, Wait wait) {
+        return null
+    }
+
+    @Override
     Navigator click(List<Class<? extends Page>> potentialPageClasses) {
         click()
         browser.page(*potentialPageClasses)
         this
+    }
+
+    @Override
+    Navigator click(List<Class<? extends Page>> potentialPageClasses, Wait wait) {
+        return null
     }
 
     @Override

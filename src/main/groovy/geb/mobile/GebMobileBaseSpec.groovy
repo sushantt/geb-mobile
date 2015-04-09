@@ -1,6 +1,6 @@
 package geb.mobile
 
-import geb.spock.GebSpec
+import geb.spock.GebReportingSpec
 import groovy.util.logging.Slf4j
 import io.selendroid.SelendroidDriver
 import io.selendroid.SelendroidKeys
@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage
  */
 @Ignore
 @Slf4j
-class GebMobileBaseSpec extends GebSpec {
+class GebMobileBaseSpec extends GebReportingSpec {
 
     def clickHome() {
         new Actions(driver).sendKeys(SelendroidKeys.ANDROID_HOME)

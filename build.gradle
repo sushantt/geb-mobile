@@ -5,12 +5,12 @@ apply plugin: 'idea'
 group = 'jumio.oss'
 version = '0.1-SNAPSHOT'
 
-ext.gebVersion = '0.9.3'
-ext.seleniumVersion = '2.42.2'
-ext.spockVersion = '0.7-groovy-2.0'
-ext.groovyVersion = '2.3.4'
+ext.gebVersion = '0.10.0'
+ext.seleniumVersion = '2.45.0'
+ext.spockVersion = '1.0-groovy-2.3'
+ext.groovyVersion = '2.3.10'
 ext.selendroidVersion = '0.11.0'
-ext.appiumClientVersion = '1.6.2'
+ext.appiumClientVersion = '2.2.0'
 ext.iosClientVersion =  '0.6+'
 
 repositories {
@@ -187,7 +187,6 @@ task runIosdriverInitTestsReal(group:'Ios', type:Test, dependsOn: [startIosdrive
 tasks.withType(Test){ task->
     onlyIf { !Boolean.getBoolean('skip.tests') }
     ignoreFailures = true
-    systemProperty = System.properties
     outputs.upToDateWhen{ false }
     doLast{
         stopServers.execute()
