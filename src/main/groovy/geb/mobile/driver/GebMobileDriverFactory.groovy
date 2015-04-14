@@ -2,6 +2,7 @@ package geb.mobile.driver
 
 import groovy.util.logging.Slf4j
 import io.appium.java_client.AppiumDriver
+import io.appium.java_client.android.AndroidDriver
 import io.selendroid.SelendroidCapabilities
 import io.selendroid.SelendroidDriver
 import org.openqa.selenium.Platform
@@ -58,7 +59,7 @@ class GebMobileDriverFactory {
             System.properties.each { String k, v ->
                 def m = k =~ /^appium_(.*)$/
                 if (m.matches()) {
-                    log.info "setting appium property: $k , $v"
+                    log.info "setting appium property: ${m[0][1]}, $v"
                     capa.setCapability(m[0][1], v)
                 }
             }
@@ -75,9 +76,9 @@ class GebMobileDriverFactory {
                 driver.setFileDetector(new LocalFileDetector())
                 return driver
             }
-            log.info("Create AppiumDriver ")
+            log.info("Creating AndroidDriver")
             try {
-                driver = new AppiumDriver(getURL("http://localhost:4723/wd/hub"), capa)
+                driver = new AndroidDriver(getURL("http://localhost:4723/wd/hub"), capa)
                 driver.setFileDetector(new LocalFileDetector())
                 sleep(1000)
                 log.info("Driver created: $driver.capabilities")
@@ -117,7 +118,7 @@ class GebMobileDriverFactory {
             System.properties.each { String k, v ->
                 def m = k =~ /^selenium_(.*)$/
                 if (m.matches()) {
-                    log.info "setting ios property: $k , $v"
+                    log.info "setting selenium property: ${m[0][1]}, $v"
                     capa.setCapability(m[0][1], v)
                 }
             }

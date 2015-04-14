@@ -13,6 +13,7 @@ import geb.waiting.WaitTimeoutException
 import groovy.util.logging.Slf4j
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
+import io.appium.java_client.android.AndroidDriver
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
@@ -25,7 +26,7 @@ import static java.util.Collections.EMPTY_LIST
  * Created by gmueksch on 23.06.14.
  */
 @Slf4j
-class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigator<AppiumDriver> {
+class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigator<AndroidDriver> {
 
     AndroidUIAutomatorNonEmptyNavigator(Browser browser, Collection<? extends MobileElement> contextElements) {
         super(browser,contextElements)
@@ -37,7 +38,7 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
 
     @Override
     Navigator find(String selectorString) {
-        //log.debug "Selector: $selectorString"
+        log.debug "Selector: $selectorString"
 
         if (selectorString.startsWith("//")) {
             return navigatorFor(driver.findElements(By.xpath(selectorString)))
@@ -50,7 +51,17 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
 
         if (selectorString.startsWith("#")) {
             String value = selectorString.substring(1)
-            return navigatorFor(driver.findElementsByAndroidUIAutomator("resourceId(\"$appPackage:id/$value\")"))
+            String resource = "resourceId(\"$appPackage:id/$value\")"
+            log.debug " android selector: $resource"
+            List<WebElement> elements = driver.findElementsByAndroidUIAutomator(resource)
+            if (elements.isEmpty()) {
+                // TODO:  this doesn't work yet
+                String scrollingResource = "new UIScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().$resource)"
+                log.debug " not found, try to scroll and find: $scrollingResource"
+                elements = driver.findElementByAndroidUIAutomator(scrollingResource)
+            }
+
+            return navigatorFor(elements)
         } else {
             selectorString = selectorString.replaceAll("'", '\"')
             log.debug "Using UIAutomator with: $selectorString"
