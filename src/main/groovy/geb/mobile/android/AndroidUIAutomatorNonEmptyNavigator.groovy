@@ -1,13 +1,26 @@
 package geb.mobile.android
 
 import geb.Browser
+import geb.Page
+import geb.error.UndefinedAtCheckerException
+import geb.error.UnexpectedPageException
 import geb.mobile.AbstractMobileNonEmptyNavigator
+import geb.navigator.AbstractNavigator
+import geb.navigator.EmptyNavigator
 import geb.navigator.Navigator
+import geb.textmatching.TextMatcher
+import geb.waiting.WaitTimeoutException
 import groovy.util.logging.Slf4j
+import io.appium.java_client.AppiumDriver
 import io.appium.java_client.MobileElement
 import io.appium.java_client.android.AndroidDriver
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
+
+import java.util.regex.Pattern
+
+import static java.util.Collections.EMPTY_LIST
 
 /**
  * Created by gmueksch on 23.06.14.
@@ -42,7 +55,6 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
             log.debug " android selector: $resource"
             List<WebElement> elements = driver.findElementsByAndroidUIAutomator(resource)
             if (elements.isEmpty()) {
-                // TODO:  this doesn't work yet
                 String scrollingResource = "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().${resource}.instance(0))"
                 log.debug " not found, try to scroll and find: $scrollingResource"
                 elements = driver.findElementsByAndroidUIAutomator(scrollingResource)
