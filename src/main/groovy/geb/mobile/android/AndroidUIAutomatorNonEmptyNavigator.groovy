@@ -55,10 +55,9 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
             log.debug " android selector: $resource"
             List<WebElement> elements = driver.findElementsByAndroidUIAutomator(resource)
             if (elements.isEmpty()) {
-                // TODO:  this doesn't work yet
-                String scrollingResource = "new UIScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().$resource)"
+                String scrollingResource = "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().${resource}.instance(0))"
                 log.debug " not found, try to scroll and find: $scrollingResource"
-                elements = driver.findElementByAndroidUIAutomator(scrollingResource)
+                elements = driver.findElementsByAndroidUIAutomator(scrollingResource)
             }
 
             return navigatorFor(elements)
