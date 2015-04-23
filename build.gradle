@@ -1,9 +1,10 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'idea'
+apply plugin: 'maven-publish'
 
-group = 'jumio.oss'
-version = '0.1-SNAPSHOT'
+group = 'geb.mobile'
+version = new ProjectVersion(1, 0, System.env.BUILD_NUMBER)
 
 ext.gebVersion = '0.10.0'
 ext.seleniumVersion = '2.45.0'
@@ -229,6 +230,56 @@ task appiumOnTestObjects(type: Test) {
     systemProperty 'appium_testobject_device', 'LG_Nexus_4_E960_real'
     include '**/GebMobileAutomationTestWithPagesSpec.*'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url = version.toString().endsWith('SNAPSHOT') ? nexusSnapshotUrl : nexusReleaseUrl
+            credentials {
+                username = nexusUser
+                password = nexusPassword
+            }
+        }
+    }
+}
+
+
+// TODO:  figure out how to do this?
+//apply from: '../gradle/versioning.gradle'
+
+// start versioning.gradle
+ext.buildTimestamp = new Date().format('yyyy-MM-dd HH:mm:ss')
+
+class ProjectVersion {
+    Integer major
+    Integer minor
+    String build
+
+    ProjectVersion(Integer major, Integer minor, String build) {
+        this.major = major
+        this.minor = minor
+        this.build = build
+    }
+
+    String toString() {
+        String fullVersion = "$major.$minor"
+
+        if (build) {
+            fullVersion += ".$build"
+        } else {
+            fullVersion += "-SNAPSHOT"
+        }
+
+        fullVersion
+    }
+}
+// stop versioning.gradle
 
 
 
