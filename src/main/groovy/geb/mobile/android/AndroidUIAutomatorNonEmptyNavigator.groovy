@@ -1,26 +1,14 @@
 package geb.mobile.android
 
 import geb.Browser
-import geb.Page
-import geb.error.UndefinedAtCheckerException
-import geb.error.UnexpectedPageException
 import geb.mobile.AbstractMobileNonEmptyNavigator
-import geb.navigator.AbstractNavigator
-import geb.navigator.EmptyNavigator
 import geb.navigator.Navigator
-import geb.textmatching.TextMatcher
-import geb.waiting.WaitTimeoutException
 import groovy.util.logging.Slf4j
-import io.appium.java_client.AppiumDriver
+import io.appium.java_client.MobileBy
 import io.appium.java_client.MobileElement
 import io.appium.java_client.android.AndroidDriver
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
-
-import java.util.regex.Pattern
-
-import static java.util.Collections.EMPTY_LIST
 
 /**
  * Created by gmueksch on 23.06.14.
@@ -38,35 +26,45 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
 
     @Override
     Navigator find(String selectorString) {
-        log.debug "Selector: $selectorString"
+        By by = getByForSelector(selectorString)
 
-        if (selectorString.startsWith("//")) {
-            return navigatorFor(driver.findElements(By.xpath(selectorString)))
-        }
+        List<WebElement> list = []
 
-//        if (selectorString.startsWith("./") ) {
-//            //log.debug("Page: ${getBrowser().getPage()} ")
-//            return navigatorFor(driver.findElements(By.xpath(selectorString.substring(1))))
-//        }
-
-        if (selectorString.startsWith("#")) {
-            String value = selectorString.substring(1)
-            String resource = "resourceId(\"$appPackage:id/$value\")"
-            log.debug " android selector: $resource"
-            List<WebElement> elements = driver.findElementsByAndroidUIAutomator(resource)
-            if (elements.isEmpty()) {
-                String scrollingResource = "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().${resource}.instance(0))"
-                log.debug " not found, try to scroll and find: $scrollingResource"
-                elements = driver.findElementsByAndroidUIAutomator(scrollingResource)
-            }
-
-            return navigatorFor(elements)
+        if (!contextElements) {
+            list = driver.findElements(by)
         } else {
-            selectorString = selectorString.replaceAll("'", '\"')
-            log.debug "Using UIAutomator with: $selectorString"
-            navigatorFor(driver.findElementsByAndroidUIAutomator(selectorString))
+            contextElements?.each { WebElement element ->
+                List<WebElement> found = element.findElements(by)
+
+                if (!found && by instanceof MobileBy.ByAndroidUIAutomator) {
+                    By scrolledBy = MobileBy.AndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(${by.automatorText})")
+                    log.debug "Not found with selector $by attempting to scroll into view using $scrolledBy"
+
+                    found = element.findElements(scrolledBy)
+                }
+
+                list.addAll(found)
+            }
         }
 
+        log.debug "Found $list.size() elements"
+
+        navigatorFor(list)
+    }
+
+    private By getByForSelector(String selectorString) {
+        By by
+        if (selectorString.startsWith("//")) {
+            by = By.xpath(selectorString)
+        } else if (selectorString.startsWith("#")) {
+            String value = selectorString.substring(1)
+            by = MobileBy.AndroidUIAutomator("resourceId(\"$appPackage:id/$value\")")
+        } else {
+            by = MobileBy.AndroidUIAutomator(selectorString?.replaceAll("'", '\"'))
+        }
+
+        log.debug "Using $by selector"
+        by
     }
 
     @Override
