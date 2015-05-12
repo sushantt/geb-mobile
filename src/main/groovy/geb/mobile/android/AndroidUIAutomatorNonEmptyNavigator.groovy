@@ -82,7 +82,7 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
 
     @Override
     String text() {
-        firstElement().text ?: firstElement().getAttribute("name")
+        firstElement().text
     }
 
     @Override
