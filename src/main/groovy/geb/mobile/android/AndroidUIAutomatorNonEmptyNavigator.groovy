@@ -77,7 +77,7 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
 
     @Override
     String tag() {
-        _props.tagName ?: firstElement().getAttribute("tagName")
+        firstElement().getAttribute("className")
     }
 
     @Override
@@ -86,11 +86,22 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
     }
 
     @Override
+    boolean isDisabled() {
+        !isEnabled()
+    }
+
+    @Override
+    boolean isEnabled() {
+        firstElement().getAttribute("enabled")?.toBoolean()
+    }
+
+    @Override
     Navigator unique() {
         new AndroidUIAutomatorNonEmptyNavigator(browser, contextElements.unique(false))
     }
 
-    protected getInputValue(MobileElement input) {
+    @Override
+    protected getInputValue(WebElement input) {
         def value
         def tagName = tag()
 
@@ -141,9 +152,13 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
     private void setSpinnerValueWithScrollToExact(MobileElement input, value) {
         try {
             input.click()
-            driver.scrollToExact(value?.toString())?.click()
+            // scroll to exact was failing if the accessibility text didn't match the desired text https://github.com/appium/java-client/issues/196
+            // driver.scrollToExact(value?.toString())?.click()
+
+            // we really only cared about the text anyways
+            (MobileElement) driver.findElementByAndroidUIAutomator(driver.UiScrollable("new UiSelector().text(\"" + value + "\")")).click()
         } catch (e) {
-            log.warn("Could not set $value to $input.tagName : $e.message")
+            log.warn("Could not set $value to $input : $e.message")
         }
     }
 

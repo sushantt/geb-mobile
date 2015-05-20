@@ -25,14 +25,11 @@ abstract class AbstractMobileNonEmptyNavigator<T> extends AbstractNavigator {
 
     protected final List<WebElement> contextElements
 
-    protected Map _props
-
     T driver
 
     AbstractMobileNonEmptyNavigator(Browser browser, Collection<? extends WebElement> contextElements) {
         super(browser)
         this.contextElements = contextElements.toList().asImmutable()
-        this._props = firstElement().properties
         this.driver = (T)browser.driver
     }
 
@@ -312,10 +309,6 @@ abstract class AbstractMobileNonEmptyNavigator<T> extends AbstractNavigator {
     @Override
     String getAttribute(String name) {
         def attribute = firstElement().getAttribute(name)
-        if (attribute == 'false' && name in BOOLEAN_ATTRIBUTES) {
-            attribute = null
-        }
-
         attribute == null ? "" : attribute
     }
 
@@ -666,7 +659,7 @@ abstract class AbstractMobileNonEmptyNavigator<T> extends AbstractNavigator {
         if( dis == null ){
             dis = firstElement().properties.disabled
         }
-        return dis
+        return dis?.toBoolean()
     }
 
     @Override
