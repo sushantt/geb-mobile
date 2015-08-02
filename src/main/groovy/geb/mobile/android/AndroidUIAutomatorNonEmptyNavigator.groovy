@@ -67,6 +67,9 @@ class AndroidUIAutomatorNonEmptyNavigator extends AbstractMobileNonEmptyNavigato
         } else if (selectorString.startsWith("#")) {
             String value = selectorString.substring(1)
             by = MobileBy.AndroidUIAutomator("resourceId(\"$appPackage:id/$value\")")
+        } else if(selectorString.startsWith(".")) {
+            String value = selectorString.substring(1)
+            by = MobileBy.className(value);
         } else {
             by = MobileBy.AndroidUIAutomator(selectorString?.replaceAll("'", '\"'))
         }
