@@ -4,13 +4,13 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 group = 'geb.mobile'
-version = new ProjectVersion(1, 0, System.env.BUILD_NUMBER)
+version = new ProjectVersion(1, 0, "0")
 ext.gebVersion = '0.10.0'
 ext.seleniumVersion = '2.45.0'
-ext.spockVersion = '1.0-groovy-2.3'
-ext.groovyVersion = '2.3.10'
+ext.spockVersion = '1.0-groovy-2.4'
+ext.groovyVersion = '2.4.1'
 ext.selendroidVersion = '0.11.0'
-ext.appiumClientVersion = '2.2.0'
+ext.appiumClientVersion = '3.1.0'
 ext.iosClientVersion =  '0.6+'
 
 repositories {
@@ -29,7 +29,9 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.2'
     compile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    // If using JUnit, need to depend on geb-junit (3 or 4)
+    testCompile "org.gebish:geb-junit4:$gebVersion"
+
     compile("org.gebish:geb-spock:$gebVersion") {
         exclude module: "groovy"
         exclude module: "groovy-all"
@@ -41,12 +43,8 @@ dependencies {
     }
 
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
-    compile("org.gebish:geb-spock:$gebVersion") {
-        exclude module: "groovy"
-        exclude module: "groovy-all"
-    }
+
     compile("org.spockframework:spock-core:$spockVersion") {
-        exclude module: "junit"
         exclude module: "groovy"
         exclude module: "groovy-all"
     }
@@ -67,6 +65,20 @@ dependencies {
 //    }
 }
 
+jar {
+    manifest {
+        attributes ( 'Implementation-Title': 'geb-mobile',
+                'Implementation-Version': version )
+    }
+    doFirst {
+        from(configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }) {
+            // remove all signature files
+            exclude "META-INF/*.SF"
+            exclude "META-INF/*.DSA"
+            exclude "META-INF/*.RSA"
+        }
+    }
+}
 
 
 def startServer = { server, command ->
@@ -245,7 +257,8 @@ publishing {
             from components.java
         }
     }
-
+}
+/*
     repositories {
         maven {
             url = version.toString().endsWith('SNAPSHOT') ? nexusSnapshotUrl : nexusReleaseUrl
@@ -255,7 +268,7 @@ publishing {
             }
         }
     }
-}
+}*/
 
 
 // TODO:  figure out how to do this?
